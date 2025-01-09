@@ -1,0 +1,16 @@
+@use "sass:meta";
+@use "sass:math";
+@use 'sass:list';
+@use "sass:map";
+@use "sass:string";
+
+// lists tools
+@function prepend($arr_1,$arr_2){
+  $_separator: list.separator($arr_1);
+  $array: list.join($arr_2,$arr_1,$_separator);
+  @return $array;
+}
+
+@function in_list($value, $list) {
+  @return (false != index($list, $value));
+}

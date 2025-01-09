@@ -1,0 +1,21 @@
+$zindex_values:(
+  sticky:            1020,
+  fixed:             1030,
+  modal-backdrop:    1040,
+  dropdown:          1045,
+  modal:             1050,
+  popover:           1060,
+  tooltip:           1070,
+) !default;
+
+@function get_zindex($value) {
+  @return map-get($zindex_values, $value)
+};
+
+@mixin zi_operator($name,$val,$add:true){
+  @if $add{
+    z-index: #{get_zindex($name) + $val};
+  }@else{
+    z-index: #{get_zindex($name) - $val};
+  }
+}

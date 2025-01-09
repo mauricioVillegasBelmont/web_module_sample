@@ -1,0 +1,22 @@
+@use "sass:meta";
+@use "sass:string";
+@use 'sass:list';
+
+  //  string function
+@function str-replace($string, $search, $replace: '') {
+  $index: str-index($string, $search);
+  @if $index {
+    @return str-slice($string, 1, $index - 1) + $replace + str-replace(str-slice($string, $index + str-length($search)), $search, $replace);
+  }
+  @return $string;
+}
+
+@function str-concat($str_arr:(), $separator:''){
+  $str_val: '';
+  @for $i from 1 through list.length($str_arr){
+    @if $i > 1 { $str_val: $str_val + $separator }
+
+    $str_val: #{$str_val}#{list.nth($str_arr,$i)};
+  }
+  @return $str_val;
+}

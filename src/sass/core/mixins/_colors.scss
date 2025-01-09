@@ -1,0 +1,126 @@
+$root_colors: true !default;
+$state_colors:() !default;
+$color_alpha:(50) !default; //valores menores a 100
+$color_darken:() !default; //valores menores a 100
+$color_lightness:() !default; //valores menores a 100
+
+
+
+
+
+
+@mixin root_color_variables(){
+  @each $color_name, $color in $color_list {
+    $c_name: to-lower-case($color_name);
+    $c_name: str-replace($c_name, ' ', $replace: '-');
+    --c-#{$c_name} : #{toRGB($color)};
+  }
+}
+
+@mixin font_colors($_colors){
+  @each $color_name, $color_val in $_colors{
+    $c_name: to-lower-case($color_name);
+    $c_name: str-replace($c_name, ' ', $replace: '-');
+
+    @include selector_extendible_generator('c',#{$c_name},()){
+      color: #{color_var($c_name)};
+      &--hover{
+       @include hover(){
+          @extend %c__#{$c_name};
+          // color: #{color_var($c_name)};
+        }
+      }
+      &--active{
+        @include active(){
+          @extend %c__#{$c_name};
+          // color: #{color_var($c_name)};
+        }
+      }
+    }
+  }
+}
+@mixin bg_colors($_colors){
+  @each $color_name, $color_val in $_colors{
+    $c_name: to-lower-case($color_name);
+    $c_name: str-replace($c_name, ' ', $replace: '-');
+    @include selector_extendible_generator('bg',#{$c_name},()){
+      background-color: #{color_var($c_name)};
+      &--hover{
+       @include hover(){
+          @extend %bg__#{$c_name};
+          // background-color: #{color_var($c_name)};
+        }
+      }
+      &--active{
+        @include active(){
+          @extend %bg__#{$c_name};
+          // background-color: #{color_var($c_name)};
+        }
+      }
+    }
+  }
+}
+@mixin alpha_colors_generator($colors, $steps:4){
+  $_color_arr: get_map_array($color_list,$colors);
+  @each $color_name, $color_val in $_color_arr{
+    $c_name: to-lower-case($color_name);
+    $c_name: str-replace($c_name, ' ', $replace: '-');
+    @include selector_extendible_generator('c',#{$c_name},('alpha')){
+      --_alpha:1;
+      color: #{toRGBA($color_val,var(--_alpha))};
+    }
+    @include selector_extendible_generator('bg',#{$c_name},('alpha')){
+      --_alpha:1;
+      background-color: #{toRGBA($color_val,var(--_alpha))};
+    }
+  }
+  @for $step from 0 through ($steps - 1){
+    $_val: _divide(100, $steps) * $step;
+    $val: _divide($_val, 100);
+    .alpha--#{$step}{
+      --_alpha: #{$val};
+    }
+  }
+}
+
+
+@mixin color_mixer_class(){
+  %c__mixer{
+    --_color_1: #{color_var('white')};
+    --_c1_proportion: 50%;
+    --_color_2: #{color_var('black')};
+    --_c2_proportion: 50%;
+    --_mix-color:color-mix(in srgb, var(--_color_1) var(--_c1_proportion, 100%), var(--_color_2) var(--_c2_proportion, 100%));
+  }
+  .c__mixer{
+    @extend %c__mixer;
+    color: var(--_mix-color);
+  }
+  .bg__mixer{
+    @extend %c__mixer;
+    background-color: var(--_mix-color);
+  }
+
+}
+
+@mixin color_mix_generator($mix_name:'mix_1', $k1_name:'white',$k1_proportion:.5, $k2_name:'dark',$k2_proprotion:.5){
+  $n1: percentage($k1_proportion);
+  $n2: percentage($k2_proprotion);
+  .c__mixer,.bg__mixer{
+    &.#{$mix_name}{
+      --_color_1: #{color_var($k1_name)};
+      --_c1_proportion: #{$n1};
+      --_color_2: #{color_var($k2_name)};
+      --_c2_proportion: #{$n2};
+    }
+  }
+}
+@mixin global_color_classes($colors:$color_list){
+  @include font_colors($colors);
+  @include bg_colors($colors);
+}
+
+@mixin linear-gradient($args...) {
+  $values: linear-gradient($args);
+  @include prefix-value(background, $values, $prefixes);
+}

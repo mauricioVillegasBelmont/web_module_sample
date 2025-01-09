@@ -1,0 +1,54 @@
+@mixin texttags-default-setup(){
+  h1, h2, h3, h4, h5, h6, p, a,
+  span, big, small, strong, em, sub, sup,
+  b, u, i,
+  del,ins, strike, s,
+  dfn, abbr,
+  time, address, acronym,
+  code, samp, kbd, pre, var,
+  // fieldset,
+  legend, label, input, select, option, output,
+  // table,
+  tr, th, td, caption,
+  tt, dl, dt, dd,
+  // menu, ol, ul,
+  li,
+  summary,
+  figcaption,
+  blockquote, q, cite,
+  {
+    @content;
+  }
+}
+@mixin font_weight_defaults(){
+  .fw--thin,.fw--hairline { @extend %fw--100; }
+  .fw--extra-light,.fw--ultra-light { @extend %fw--200; }
+  .fw--light { @extend %fw--300; }
+  .fw--medium { @extend %fw--500; }
+  .fw--semi-bold,.fw--demi-bold { @extend %fw--600; }
+  .fw--extra-bold,.fw--ultra-bold { @extend %fw--800; }
+  .fw--black,.fw--heavy { @extend %fw--900; }
+
+  .fw--lighter{ @extend %fw--100; font-weight: lighter; }
+  .fw--normal { @extend %fw--400; font-weight: normal; }
+  strong,b,.fw--bold { @extend %fw--700; font-weight: bold;}
+  .fw--bolder{ @extend %fw--900; font-weight: bolder; }
+}
+@mixin font_family_generator(){
+  $_dflt_val:false;
+  @each $key, $font in $font-families {
+    @if $key == 'default'{ $_dflt_val: $font; }
+    $font_class_name: to-lower-case($key);
+    $font_class_name: str-replace($font_class_name, ' ', $replace: '-');
+    @include selector_extendible_generator('ff','',($font_class_name)){
+      @if $_dflt_val == $font and not ($key == 'default'){
+        @extend %ff--default;
+      }
+      @else {
+        font-family: #{$font};
+      }
+    }
+
+  }
+
+}

@@ -1,0 +1,30 @@
+@use 'sass_mixins/media-query' as mq;
+@use 'sass_mixins/states' as st;
+@use 'sass/fotn_styles' as cfs;
+
+.#{$dymanic}__display{
+  @include cfs.fotn_styles();
+  .calculadora__aportation{
+    display: flex;
+    .column{
+      width: 100%;
+      max-width: 50%;
+    }
+  }
+  .calculadora__profit{
+    margin-top:.75rem;
+    margin-bottom:.75rem;
+    display: flex;
+    .dynamic__image{
+      width: 180px;
+      img{
+        display: block;
+
+      }
+    }
+    .dynamic__info{
+      padding: 0 0 0 1.25rem;
+      flex-grow: 1;
+    }
+  }
+}

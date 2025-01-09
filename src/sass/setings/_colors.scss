@@ -1,0 +1,33 @@
+$root_colors: true;
+$color_list : (
+  "white"    : #FFFFFF,
+  "black"    : #1c1c1c,
+  "gray"    : #86898d,
+  "gray-light"    : #cecece,
+  "gray-extralight"    : #f1f1f1,
+  "danger"    : #B02959,
+  "warning"    : #1c1c1c,
+  "success"    : #28A745,
+  "error"    : #F5BA36,
+
+  "roof-terracotta": #A7192F,
+  "monarch": #8a0d20,
+  "saffron": #F5BA36,
+  "blue-lagoon": #007D8B,
+  "blue-stone": #016369,
+  "cyprus": #013140,
+  "daintree": #012839,
+
+
+);
+$state_colors:(
+  'white',
+  "danger",
+  "success",
+  "alert",
+  'Picton',
+);
+
+$alpha_steps: 4; // valores ente 1 y 10
+$darken_steps: 4; // valores ente 1 y 10
+$lightness_steps: 4; // valores ente 1 y 10

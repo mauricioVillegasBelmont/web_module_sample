@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "typeRoots": ["./node_modules/@types", "./custom_types"],
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
+    "allowJs": true,
+    "module": "esnext",
+    "target": "es6",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "baseUrl": "src",
+    "paths": { "components/*": ["components/*"] }
+  },
+  "exclude": ["node_modules", "src/**/*.back", "src/**/*.back.*"],
+  "include": ["src/**/*","./custom_types", "node_modules/lit-scss-loader/types.d.ts"]
+}

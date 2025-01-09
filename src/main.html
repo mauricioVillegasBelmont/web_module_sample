@@ -1,0 +1,100 @@
+<div id="${process.env.dynamic}--calculadora__ahorro">
+  <div class="${process.env.dynamic}__calculadora--container">
+    <div class="col__interface">
+      <h1>${this.name}</h1>
+      <form class="${process.env.dynamic}__form">
+        <div class="${process.env.dynamic}__form--group">
+          <input
+            id="name"
+            type="text"
+            name="name"
+            value="${this.name}"
+            placeholder="Tu nombre:"
+            class="input__text c--black"
+            pattern="(S{2,}s+){2,}S{2,}"
+            autocomplete="name"
+            required
+          />
+        </div>
+        <div class="${process.env.dynamic}__form--group">
+          <input
+            id="email"
+            type="email"
+            name="email"
+            value=""
+            placeholder="Tu correo:"
+            class="input__text c--black"
+            pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}"
+            autocomplete="email"
+            required
+          />
+        </div>
+        <div class="${process.env.dynamic}__form--group">
+          <input
+            id="phone"
+            type="text"
+            name="whatsapp"
+            value=""
+            placeholder="Tu WhatsApp:"
+            class="input__text c--black"
+            minlength="10"
+            maxlength="10"
+            required
+            pattern="[0-9]{10,10}"
+            data-case="numericOnly"
+            autocomplete="tel"
+          />
+        </div>
+        <div class="${process.env.dynamic}__form--group">
+          <label for="age">Edad</label>
+          <span id="age_val">${this.age} años</span>
+          <input
+            id="age"
+            type="range"
+            name="age"
+            min="18"
+            max="100"
+            step="1"
+            value="${this.age}"
+            placeholder="Tu nombre:"
+          />
+        </div>
+        <div class="${process.env.dynamic}__form--group">
+          <label for="investment">Inversión mensual</label>
+          <span id="investment_val">$${this.investment}</span>
+          <input
+            id="investment"
+            type="range"
+            name="investment"
+            min="500"
+            max="20000"
+            step="500"
+            value="${this.investment}"
+            placeholder="Tu nombre:"
+          />
+        </div>
+        <div class="${process.env.dynamic}__form--group">
+          <button type="submit">Hablar con un asesor</button>
+        </div>
+      </form>
+      <div class="display">
+        <img src="" alt="" class="dynamic__image" />
+        <p class="label">Ganancia:</p>
+        <p class="dynamic__money">$00000</p>
+      </div>
+      <p class="note">
+        Los datos presentados son una estimación con fines informativos,
+        los montos pueden cambiar al momento de realizar el ejercicio
+        real.
+      </p>
+    </div>
+    <div class="col__display">
+      <google-chart
+        data='[["Month", "Days"], ["Jan", 31]]'
+      ></google-chart>
+      <div class="foreground ">
+        <img src="./assets/calculadora__land_front.png" alt="" />
+      </div>
+    </div>
+  </div>
+</div>

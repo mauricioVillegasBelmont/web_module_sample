@@ -1,0 +1,79 @@
+$font_weight_utilities: true;
+$text_align_utilities: true;
+$gobal_font_size:18px;
+$gobal_lineheight:1.5;
+
+
+@mixin enbed__fonts(){
+  @font-face {
+    font-family: 'HeinzLabel';
+    src: url('#{$FONT_FILE_PATH}/HeinzLabel.woff2') format('woff2'),
+        url('#{$FONT_FILE_PATH}/HeinzLabel.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Intro';
+    src: url('#{$FONT_FILE_PATH}/Intro-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Mukta';
+    src: url('#{$FONT_FILE_PATH}/Mukta-SemiBold.woff2') format('woff2');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Mukta';
+    src: url('#{$FONT_FILE_PATH}/Mukta-ExtraBold.woff2') format('woff2');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'Lalezar';
+    src: url('#{$FONT_FILE_PATH}/Lalezar-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
+}
+
+
+$font-families: (
+  "default": "Intro",
+  "Intro": "Intro",
+  "Mukta": "Mukta",
+  "Lalezar": "Lalezar",
+  "HeinzLabel": "HeinzLabel",
+
+
+
+  "system": "system-ui",
+  "sans": "sans-serif Arial, Helvetica, sans-serif",
+  'serif':'"Times New Roman", Times, serif',
+  "fantasy": "fantasy",
+  "mono": "monospace",
+);
+
+$font_weights:(
+  // 100,200,300,400,500,600,700,800,900
+  400,600
+) !default;
+$font_weights_keys:(
+  // 100:'lighter',
+  400:'normal',
+  600:'bold',
+  // 900:'bolder',
+);
+
+$font_styles:('italic','oblique','normal');
+
+$min-char-readable-line-leghth: 45;
+$max-char-readable-line-leghth: 75;
+
+$text_align_array:('left','center','right','justify') !default;

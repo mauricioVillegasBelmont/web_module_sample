@@ -1,0 +1,111 @@
+@function divisions($slice, $divisions, $container-width: 1200, $gutter-width: 2){
+
+	$slice-width: (($container-width/$divisions)) - (($gutter-width * ($divisions - 1)) / $divisions);
+	$division-width: $slice-width * $slice + ($slice - 1) * $gutter-width;
+	@return percentage($division-width / $container-width);
+}
+
+
+@mixin grid-generator($prefix,$break-points,$max-columns,$g:false){
+  .#{$prefix}-grid {
+    max-width: 100%;
+    @include flex-basis(0);
+    @include flex-grow(1);
+		@if $g{
+			padding-left: $g / 2;
+			padding-right: $g / 2;
+		}
+  }
+  .#{$prefix}-grid-auto{
+    @include flex-shrink(1);
+    @include flex-grow(1);
+    @include flex-basis(0);
+    width: auto;
+    max-width: 100%;
+		@if $g{
+			padding-left: $g / 2;
+			padding-right: $g / 2;
+		}
+  }
+  @for $i from 1 through $max-columns {
+
+
+    .#{$prefix}-grid-#{$i}{
+      max-width: percentage($i / $max-columns);
+      @include flex(0 0 #{ percentage($i / $max-columns)}  );
+      // max-width: divisions($i, $max-columns,1000,  12.5);
+      // @include flex(0 0 #{ divisions($i, $max-columns,1000,  12.5) }  );
+			@if $g{
+				padding-left: $g / 2;
+				padding-right: $g / 2;
+			}
+    }
+  }
+  @each $breakpoint in map-keys($break-points) {
+    //@include grid-query-generator($prefix,$breakpoint, $max-columns, $g);
+    @include media-breakpoint-up($breakpoint){
+      .#{$prefix}-grid-#{$breakpoint}-auto{
+        @include flex(1 0 auto);
+        width: auto;
+        max-width: 100%;
+				@if $g{
+					padding-left: $g / 2;
+					padding-right: $g / 2;
+				}
+      }
+      @for $i from 1 through $max-columns {
+        .#{$prefix}-grid-#{$breakpoint}-#{$i} {
+          // max-width: percentage(($i / $max-columns) - $g);
+          // @include flex(0 0 #{ percentage(($i / $max-columns) - $g) }  );
+          // max-width: divisions($i, $max-columns,1000,  12.5);
+          // @include flex(0 0 #{ divisions($i, $max-columns,1000,  12.5) }  );
+					max-width: percentage($i / $max-columns);
+		      @include flex(0 0 #{ percentage($i / $max-columns)}  );
+					@if $g{
+						padding-left: $g / 2;
+						padding-right: $g / 2;
+					}
+        }
+      }
+    }
+  }
+}
+
+@mixin column-grid-generator($breakpoints,$grid-columns){
+  .col{
+    @extend %grid-column;
+  }
+	.col-auto{
+		width: auto;
+		max-width: 100%;
+	}
+	@for $i from 1 through $grid-columns {
+		.col-#{$i} {
+			@extend %width-100;
+			max-width: percentage(  _divide($i, $grid-columns) );
+			@include flex(0 0 percentage( _divide($i, $grid-columns)));
+		}
+	}
+	@each $breakpoint-name, $breakpoint-value in $breakpoints{
+		@if ( $breakpoint-value != 0){
+			@for $i from 1 through $grid-columns {
+				.col-#{$breakpoint-name}-#{$i}{
+					@extend %width-100;
+				}
+			}
+			@include media-breakpoint-up($breakpoint-name){
+				.col-#{$breakpoint-name}-auto{
+					@include flex(0 0 auto);
+					width: auto;
+					max-width: none;
+				}
+				@for $i from 1 through $grid-columns {
+					.col-#{$breakpoint-name}-#{$i} {
+						max-width: percentage( _divide($i, $grid-columns));
+						@include flex(0 0 percentage( _divide($i, $grid-columns)));
+					}
+				}
+			}
+		}
+  }
+}

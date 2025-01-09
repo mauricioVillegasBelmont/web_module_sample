@@ -1,0 +1,53 @@
+@use "sass:meta";
+@use 'sass:list';
+@use "sass:math";
+@use "sass:map";
+@use "sass:string";
+@use "sass:selector";
+
+
+@mixin bulk_simple_selector_extend_helper($config,$generate_class:false){
+  @if empty_value($config){
+    @warn 'Empty bulk selector extend array';
+  }
+  @each $arr in $config{
+    @if empty_value($arr){
+      @debug 'OBJECT: ' $config;
+      @error 'Empty bulk selector extend helper array value';
+    }
+    @include  oocss_extend_generator(
+      list.nth($arr,1), list.nth($arr,2), list.nth($arr,3), list.nth($arr,4), list.nth($arr,5), list.nth($arr,6),$generate_class
+    );
+  }
+}
+@mixin bulk_full_selector_extend_helper($config,$generate_class:false){
+  @if empty_value($config){
+    @warn 'Empty bulk selector extend array';
+  }
+  @each $arr in $config{
+    @if empty_value($arr){
+      @debug 'OBJECT: ' $config;
+      @error 'Empty bulk selector extend helper array value';
+    }
+    @include  oocss_extend_generator_full(
+      list.nth($arr,1), list.nth($arr,2), list.nth($arr,3), list.nth($arr,4), list.nth($arr,5), list.nth($arr,6),$generate_class
+    );
+  }
+}
+
+@mixin bulk_margin_padding($config, $generate_class:false){
+  @if empty_value($config){
+    @warn 'Empty bulk selector extend array';
+  }
+  @each $arr in $config{
+    @if empty_value($arr){
+      @debug 'OBJECT: ' $config;
+      @error 'Empty bulk selector extend helper array value';
+    };
+    @include margin_padding_constructor(list.nth($arr,1), list.nth($arr,2), list.nth($arr,3), list.nth($arr,4), list.nth($arr,5),$generate_class);
+    @include margin_padding_query_constructor(list.nth($arr,1), list.nth($arr,2), list.nth($arr,3), list.nth($arr,4), list.nth($arr,5),$generate_class);
+  }
+}
+@mixin display-helper($value){
+  @include meta.apply(meta.get-mixin(#{'display-'}#{$value}));
+}

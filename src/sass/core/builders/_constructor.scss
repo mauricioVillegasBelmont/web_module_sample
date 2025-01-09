@@ -1,0 +1,121 @@
+@use "sass:meta";
+@use 'sass:list';
+@use "sass:math";
+@use "sass:map";
+@use "sass:string";
+@use "sass:selector";
+
+
+@mixin debug_mixin($value){
+  @debug $value;
+}
+@mixin apply_mixin_values($mixin, $list) {
+  @each $element in $list {
+    @include meta.apply($mixin, $element);
+  }
+}
+@mixin selector_content_generator($block: '',$element:(),$modifiers:(),$prefix:'.'){
+  $selector: bem($block,$element,$modifiers);
+  #{$prefix}#{$selector}{ @content; }
+}
+@mixin selector_extendible_generator($block: '',$element:'',$modifiers:()){
+  $selector: bem($block,$element,$modifiers);
+  #{'.'}#{$selector},#{'%'}#{$selector}{ @content; }
+}
+
+
+@mixin content_cosntructor($subject,$value,$use_mixin:false ){
+  @if $use_mixin {
+    @include apply_mixin_values(meta.get-mixin($subject), $value...);
+  } @else {
+    #{$subject}: #{$value};
+  }
+}
+
+
+@mixin breakpoin_contructor_modifier(){
+  $constructor_breakpoints: get_breakpoint_keys_list($utility_breakpoints);
+  @each $breakpoint-key in $constructor_breakpoints{
+    @content;
+  }
+}
+
+
+@mixin oocss_extend_generator($block, $element, $modifiers:(), $values, $subject, $use_mixin:false,$make_class:true){
+  @each $value in $values{
+    $_modifiers: list.append($modifiers,$value);
+    @if $make_class {
+      @include selector_extendible_generator($block,$element,$_modifiers){
+        @include content_cosntructor($subject,$value,$use_mixin);
+      }
+    } @else {
+      @include selector_content_generator($block,$element,$_modifiers,'%'){
+        @include content_cosntructor($subject,$value,$use_mixin);
+      }
+    }
+  }
+}
+@mixin oocss_extend_mediaquery($block,$element, $modifiers:(), $values, $subject, $use_mixin:false,$make_class:true){
+  $constructor_breakpoints: get_breakpoint_keys_list($utility_breakpoints);
+  @each $breakpoint-key in $constructor_breakpoints{
+    $_modifiers: prepend($modifiers, ($breakpoint-key));
+    @include media-breakpoint-up($breakpoint-key, true){
+      @include oocss_extend_generator($block, $element, $_modifiers, $values, $subject, $use_mixin,$make_class);
+    }
+  }
+}
+@mixin oocss_extend_generator_full($block, $element, $modifiers:(), $values, $subject, $use_mixin:false,$make_class:true){
+  @include oocss_extend_generator($block, $element, $modifiers, $values, $subject, $use_mixin,$make_class);
+  @include oocss_extend_mediaquery($block, $element, $modifiers, $values, $subject, $use_mixin,$make_class);
+}
+
+
+
+
+
+@mixin margin_padding_selector( $block, $modifiers, $attr, $dir_attr, $value, $generate_class:true ){
+  @if $generate_class{
+    @include selector_extendible_generator($block,'',$modifiers){
+      @for $attr_i from 1 through list.length($dir_attr){
+        $subject:#{ str-concat( ($attr, list.nth($dir_attr,$attr_i) ),'-')};
+        @include content_cosntructor($subject,$value,false);
+      }
+    }
+  } @else{
+    @include selector_content_generator($block,'',$modifiers,'%'){
+      @for $attr_i from 1 through list.length($dir_attr){
+        $subject:#{ str-concat( ($attr, list.nth($dir_attr, $attr_i) ),'-')};
+        @include content_cosntructor($subject,$value,false);
+      }
+    }
+  }
+}
+
+@mixin margin_padding_constructor( $block, $directions, $size_lenght, $subject, $use_auto:false,$generate_class:true, $modifiers:(), ){
+  @each $_direction in $directions {
+    $_block: $block+$_direction;
+    $directions: map.get($DIRECTION_OBJ, $_direction);
+    @if $use_auto{
+      $_modifiers: $modifiers;
+      $_modifiers: append($_modifiers,'auto');
+      $value: calculate_margin_padding_value('auto');
+      @include margin_padding_selector($_block,$_modifiers,$subject,$directions,$value,$generate_class);
+    }
+    @for $multiplier from 1 through $size_lenght {
+      $_modifiers: list.append($modifiers,($multiplier - 1));
+      $value: calculate_margin_padding_value($multiplier);
+      @include margin_padding_selector($_block, $_modifiers,$subject,$directions,$value,$generate_class);
+    }
+  }
+}
+
+@mixin margin_padding_query_constructor( $block, $directions, $size_lenght, $subject, $use_auto:false,$generate_class:true, $modifiers:(), ){
+  $constructor_breakpoints: get_breakpoint_keys_list($utility_breakpoints);
+  @each $breakpoint-key in $constructor_breakpoints{
+    @include media-breakpoint-up($breakpoint-key, true){
+      $_modifiers: prepend($modifiers, ($breakpoint-key));
+      @include margin_padding_constructor( $block, $directions, $size_lenght, $subject, $use_auto,$generate_class, $_modifiers );
+    }
+
+  }
+}

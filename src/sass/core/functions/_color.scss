@@ -1,0 +1,17 @@
+@use 'sass:color';
+@function color_var($k){
+  $color: #000;
+  @if $root_colors{
+    $color: var(--c-#{$k});
+  }@else{
+    $color: map-get($color_list, #{$k});
+  }
+  @return $color;
+}
+
+@function toRGB ($color) {
+    @return "rgb(" + color.channel($color, "red", $space: rgb) + ", " + color.channel($color, "green", $space: rgb) + ", " + color.channel($color, "blue", $space: rgb) + ")";
+}
+@function toRGBA ($color, $alpha:1) {
+    @return "rgba(" + color.channel($color, "red", $space: rgb) + ", " + color.channel($color, "green", $space: rgb) + ", " + color.channel($color, "blue", $space: rgb) + ", " + $alpha + ")";
+}

@@ -1,0 +1,61 @@
+
+$ASSET_VERSION:'';
+$CSS_IMAGES_PATH: '/site_media/site/img';
+$FONT_FILE_PATH: '/site_media/site/fonts';
+
+// display prefixer
+// - applies to: display: flex | grid | etc.
+// webkit moz ms o
+$prefixes:();
+
+  //mediaquery responsive $breakpoints
+$breakpoints: (
+  0:  0px,
+  xs: 320px,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xx: 1560px
+);
+$utility_breakpoints: (
+  'sm','md','lg','xl','xx'
+);
+$grid_breakpoints: (
+  'sm','md','lg','xx'
+);
+
+//zindex
+$zindex_values:(
+  1:            1,
+  0:            0,
+  n:           -1,
+  sticky:            1020,
+  fixed:             1030,
+  modal-backdrop:    1040,
+  dropdown:          1045,
+  modal:             1050,
+  popover:           1060,
+  tooltip:           1070,
+);
+
+$grid-columns:12;
+
+$display_utilities: true;
+$position_utilities: true;
+
+$flex_utilities: true;
+$order_length: 2;
+// $grid_utilities: false; // in develoment
+
+$_widht_height_defaults: (20,25,50,75,80,100);
+$width_utilities: true;
+$height_utilities: true;
+
+$margin-utilities: true;
+$padding-utilities: true;
+
+$zindex_utilities: true;
+
+
+$IMAGE_EXT: webp

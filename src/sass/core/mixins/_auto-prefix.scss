@@ -1,0 +1,28 @@
+@mixin prefix-attribute($property, $value, $prefixes: ()) {
+  @if type-of($value) == 'string'{
+    $value: unquote($value);
+  }
+  @if $prefixes {
+    @each $prefix in $prefixes {
+      #{'-' + $prefix + '-' + $property}:$value;
+    }
+  }
+
+  // Output standard non-prefixed declaration
+  #{$property}: $value;
+}
+
+@mixin prefix-value($property, $value, $prefixes: ()) {
+  @if type-of($value) == 'string'{
+    $value: unquote($value);
+  }
+  @if $prefixes {
+    @each $prefix in $prefixes {
+    @debug $prefix;
+      #{$property}: #{'-' + $prefix + '-' + $value};
+    }
+  }
+
+  // Output standard non-prefixed declaration
+  #{$property}: #{$value};
+}

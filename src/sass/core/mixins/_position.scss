@@ -1,0 +1,20 @@
+@mixin position($position:false,$t:false,$r:false,$b:false,$l:false,$m:false){
+  @if($position){
+    position: $position;
+  }
+  @if($t){
+    top: $t;
+  }
+  @if($r){
+    right: $r;
+  }
+  @if($l){
+    left: $l;
+  }
+  @if($b){
+    bottom: $b;
+  }
+  @if($m){
+    margin: $m;
+  }
+}

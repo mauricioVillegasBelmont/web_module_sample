@@ -1,0 +1,43 @@
+@use "sass:map";
+@use 'sass_setings/general' as general;
+
+@mixin breakpoint-up($selector, $specifier:false) {
+  // If the breakpoint exists in the map.
+  @if map.has-key(general.$breakpoints, $selector) {
+    $breakpoint-value: map.get(general.$breakpoints, $selector);
+    // Write the media query.
+    @if $specifier {
+      @media (min-width: $breakpoint-value) {
+        html{
+          @content;
+        }
+      }
+    } @else {
+      @media (min-width: $breakpoint-value) {
+        @content;
+      }
+    }
+
+  } @else {
+
+    @warn 'Invalid breakpoint: #{$selector}.';
+  }
+}
+
+@mixin breakpoint-down($selector,  $specifier:false) {
+
+  // If the breakpoint exists in the map.
+  @if map-has-key(general.$breakpoints, $selector) {
+    // Get the breakpoint value.
+    $breakpoint-value: map.get(general.$breakpoints, $selector);
+    @media (max-width: ($breakpoint-value - 0.1)) {
+      @content;
+    }
+
+  // If the breakpoint doesn't exist in the map.
+  } @else {
+
+    // Log a warning.
+    @warn 'Invalid breakpoint: #{$selector}.';
+  }
+}

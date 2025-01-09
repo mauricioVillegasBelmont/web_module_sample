@@ -1,0 +1,111 @@
+@use "sass:string";
+@mixin hover(){
+  &:hover{
+    @content;
+  }
+}
+
+@mixin hidden(){
+  &.hidden,&[hidden]{
+    @content;
+  }
+}
+@mixin target(){
+  &.target,&:target,&[target]{
+    @content;
+  }
+}
+@mixin active(){
+  &.active,&:active,&[active]{
+    @content;
+  }
+}
+@mixin checked(){
+  &.checked,&:checked,&[checked]{
+    @content;
+  }
+}
+@mixin enabled(){
+  &.enabled,&:enabled,&[enabled]{
+    @content;
+  }
+}
+@mixin disabled(){
+  &.disabled,&:disabled,&[disabled]{
+    @content;
+  }
+}
+@mixin valid(){
+  &.valid,&:valid,&[valid]{
+    @content;
+  }
+}
+@mixin invalid(){
+  &.invalid,&:invalid,&[invalid]{
+    @content;
+  }
+}
+@mixin optional(){
+  &.optional,&:optional,&[optional]{
+    @content;
+  }
+}
+@mixin empty(){
+  &.empty,&:empty{
+    @content;
+  }
+}
+@mixin required(){
+  &.required,&:required,&[required]{
+    @content;
+  }
+}
+@mixin link(){
+  &.link,&:link{
+    @content;
+  }
+}
+@mixin visited(){
+  &.visited,&:visited{
+    @content;
+  }
+}
+@mixin focus($focus_visible:false){
+  $selectors : '&.focus,&:focus';
+  @if $focus_visible{
+    $selectors : '&.focus,&:focus,&.focus-visible,&:focus-visible';
+  }
+  #{string.unquote($selectors)}{
+    @content;
+  }
+}
+@mixin focus-visible(){
+  &.focus-visible,&:focus-visible{
+    @content;
+  }
+}
+@mixin selection(){
+  &::selection{
+    @content;
+  }
+}
+@mixin first-line(){
+  &::first-line{
+    @content;
+  }
+}
+@mixin first-letter(){
+  &::first-letter{
+    @content;
+  }
+}
+@mixin before(){
+  &::before{
+    @content;
+  }
+}
+@mixin after(){
+  &::after{
+    @content;
+  }
+}

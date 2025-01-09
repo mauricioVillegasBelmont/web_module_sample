@@ -1,0 +1,93 @@
+@mixin container_constructor($__breakpoints){
+  $constructor_breakpoints: get_map_breakpoints($__breakpoints);
+  @each $breakpoint-key, $breakpoint-value in $constructor_breakpoints{
+
+    &--#{$breakpoint-key}{
+      @extend %container--base;
+      max-width: $breakpoint-value;
+    }
+
+  }
+}
+
+@mixin col-content(){
+  @include flex(0 0 auto);
+}
+@mixin col-100($key:false){
+  @if $key{
+    @extend %w--#{$key}--100;
+  } @else {
+    @extend %w--100;
+  }
+}
+@mixin col-grow($key:false){
+  @include flex(1 0 0);
+  @include col-100($key);
+}
+
+
+@mixin col_constructor($grid-columns){
+  %content__size--col{
+    @include col-content();
+  }
+  .col--content{
+    @include col-content();
+    max-width: auto;
+  }
+  .col--grow{
+    @include col-grow();
+    max-width: auto;
+  }
+  @for $i from 1 through $grid-columns{
+    .col--#{$i}{
+      @include col-100();
+      @extend %content__size--col;
+      $__sizer: percentage( _divide($i, $grid-columns));
+      max-width:#{$__sizer};
+    }
+  }
+}
+
+@mixin col_query_constructor($__querybreakpoints, $grid-columns){
+  $query: get_breakpoint_keys_list( $__querybreakpoints);
+  @each $q_key in $query{
+
+    .col--#{$q_key}--grow{
+      @include col-100();
+    }
+
+    @for $i from 1 through $grid-columns{
+      .col--#{$q_key}--#{$i}{
+        @include col-100();
+        @include col-content();
+      }
+    }
+
+    @include media-breakpoint-up($q_key, true){
+      %content__size--#{$q_key}--col{
+        // @include col-content();
+      }
+      .col--#{$q_key}--content{
+        @include col-content();
+         max-width: auto;
+      }
+      .col--#{$q_key}--grow{
+        @include col-grow($q_key);
+        max-width: auto;
+      }
+      @for $i from 1 through $grid-columns{
+        .col--#{$q_key}--#{$i}{
+          @extend %content__size--#{$q_key}--col;
+          $__sizer: percentage( _divide($i, $grid-columns));
+          max-width:#{$__sizer};
+        }
+      }
+
+    }
+  }
+}
+
+@mixin col_bulk_constructor($__querybreakpoints, $grid-columns){
+  @include col_constructor($grid-columns);
+  @include  col_query_constructor($__querybreakpoints, $grid-columns);
+}

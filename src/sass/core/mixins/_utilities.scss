@@ -1,0 +1,31 @@
+// SITE_ASSETS
+$CSS_IMAGES: '/site_media/site/img' !default;
+@mixin site_background_image($img){
+  background-image: url('#{$CSS_IMAGES}#{$img}');
+}
+@mixin min_accesible_element($use_coarse){
+  @if $use_coarse{
+    @media (any-pointer: coarse){
+      min-width: $accessible_tap_size;
+      min-height: $accessible_tap_size;
+    }
+  }
+  @else{
+    min-width: $accessible_tap_size;
+    min-height: $accessible_tap_size;
+  }
+}
+
+@mixin width-val($value, $units:'%'){
+  width: #{$value+$units};
+}
+@mixin height-val($value,$units:'%'){
+  height: #{$value+$units};
+}
+
+@mixin zindex-utility($conf){
+  @if map-has-key($zindex_values, $conf) {
+    $z_value:map-get($zindex_values, $conf);
+    z-index:$z_value;
+  }
+}

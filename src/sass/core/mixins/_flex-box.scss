@@ -1,0 +1,128 @@
+//@import 'auto-prefix';
+$prefixes: webkit-box moz-box webkit moz ms !default;
+
+@mixin display-flex() {
+  @if (in_list(ms,$prefixes)){
+    $prefixes: append($prefixes,ms-flex)
+  }
+  @if (in_list(moz,$prefixes)){
+    $prefixes: append($prefixes,moz-box)
+  }
+  @include prefix-attribute(display,flex,$prefixes);
+}
+@mixin display-inline-flex() {
+  @if (in_list(ms,$prefixes)){
+    $prefixes: append($prefixes,ms-flex)
+  }
+  @if (in_list(moz,$prefixes)){
+    $prefixes: append($prefixes,moz-box)
+  }
+  @include prefix-attribute(display,inline-flex,$prefixes);
+}
+
+// The 'flex' shorthand
+// - applies to: flex items
+// <positive-number>, initial, auto, or none
+@mixin flex($values) {
+  @include prefix-attribute(flex,$values,$prefixes);
+}
+
+// Flex Flow Direction
+// - applies to: flex containers
+// row | row-reverse | column | column-reverse
+@mixin flex-direction($direction) {
+  @include prefix-attribute(flex-direction,$direction,$prefixes);
+}
+
+// Flex Line Wrapping
+// - applies to: flex containers
+// nowrap | wrap | wrap-reverse
+@mixin flex-wrap($wrap) {
+  @include prefix-attribute(flex-wrap,$wrap,$prefixes);
+}
+
+// Flex Direction and Wrap
+// - applies to: flex containers
+// <flex-direction> || <flex-wrap>
+@mixin flex-flow($flow) {
+  @include prefix-attribute(flex-flow,$flow,$prefixes);
+}
+
+// Display Order
+// - applies to: flex items
+// <integer>
+@mixin flex-order($val) {
+  @if (in_list(ms,$prefixes)){
+    $prefixes: append($prefixes,ms-flex)
+  }
+  @if (in_list(moz,$prefixes)){
+    $prefixes: append($prefixes,moz-box)
+  }
+  @include prefix-attribute(ordinal-group,$val);
+  @include prefix-attribute(order,$val);
+}
+
+// Flex grow factor
+// - applies to: flex items
+// <number>
+@mixin flex-grow($grow) {
+  @include prefix-attribute(flex-grow,$grow,$prefixes);
+}
+
+// Flex shrink
+// - applies to: flex item shrink factor
+// <number>
+@mixin flex-shrink($shrink) {
+  @include prefix-attribute(flex-shrink,$shrink,$prefixes);
+}
+
+// Flex basis
+// - the initial main size of the flex item
+// - applies to: flex itemsnitial main size of the flex item
+// <width>
+@mixin flex-basis($width) {
+  @include prefix-attribute(flex-basis,$width,$prefixes);
+}
+
+// Axis Alignment
+// - applies to: flex containers
+// flex-start | flex-end | center | space-between | space-around
+@mixin justify-content($justify) {
+  @if (in_list(ms,$prefixes)){
+    $prefixes: append($prefixes,ms-flex-pack)
+  }
+  @include prefix-attribute(justify-content,$justify,$prefixes);
+}
+@mixin justify-items($justify) {
+  @if (in_list(ms,$prefixes)){
+    $prefixes: append($prefixes,ms-flex-pack)
+  }
+  @include prefix-attribute(justify-items,$justify,$prefixes);
+}
+@mixin justify-self($justify) {
+  @if (in_list(ms,$prefixes)){
+    $prefixes: append($prefixes,ms-flex-pack)
+  }
+  @include prefix-attribute(justify-self,$justify,$prefixes);
+}
+
+// Packing Flex Lines
+// - applies to: multi-line flex containers
+// flex-start | flex-end | center | space-between | space-around | stretch
+@mixin align-content($align) {
+  @include prefix-attribute(align-content,$align,$prefixes);
+}
+
+// Cross-axis Alignment
+// - applies to: flex containers
+// flex-start | flex-end | center | baseline | stretch
+@mixin align-items($align) {
+  @include prefix-attribute(align-items,$align,$prefixes);
+}
+
+// Cross-axis Alignment
+// - applies to: flex items
+// auto | flex-start | flex-end | center | baseline | stretch
+@mixin align-self($align) {
+  @include prefix-attribute(align-self,$align,$prefixes);
+}

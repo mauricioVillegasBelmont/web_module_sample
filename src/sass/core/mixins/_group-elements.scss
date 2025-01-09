@@ -1,0 +1,40 @@
+@mixin group-element-rad($first-rad,$last-rad){
+  &:not(:last-child),&:not(:first-child){
+    border-radius: 0;
+  }
+  &:last-child{
+    border-radius: $last-rad;
+  }
+  &:first-child{
+    border-radius: $first-rad;
+  }
+}
+
+@mixin group-element-margin($direction, $inner-margin){
+  &:not(:last-child),&:not(:first-child){
+    @if $direction == column{
+      margin-top: #{$inner-margin}/2;
+      margin-bottom: #{$inner-margin}/2;
+    }
+    @if $direction == row{
+      margin-right: #{$inner-margin}/2;
+      margin-left: #{$inner-margin}/2;
+    }
+  }
+  &:last-child{
+    @if $direction == column{
+      margin-left: #{$inner-margin}/2;
+    }
+  }
+  &:first-child{
+    @if $direction == column{
+      margin-right: #{$inner-margin}/2;
+    }
+  }
+}
+
+@mixin group-element-inner-elements(){
+  &:not(:last-child),&:not(:first-child){
+    @content;
+  }
+}

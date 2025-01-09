@@ -1,0 +1,42 @@
+@use "sass:meta";
+@use "sass:math";
+@use 'sass:list';
+@use "sass:map";
+@use "sass:string";
+
+
+//font utilities
+$rem_default_size: $gobal_font_size !default;
+@function stripUnit($value) {
+  @if meta.type-of($value) == 'number' and not math.is-unitless($value) {
+    $_tmp: ($value * 0 + 1);
+    @return _divide($value, $_tmp);
+  }
+  @return $value;
+}
+@function px_to_rem($pxValue){
+  $value: stripUnit($pxValue);
+  $rem_default_size: stripUnit($rem_default_size);
+  $val: _divide($value,$rem_default_size);
+  $val: to_number(#{$val+rem});
+  @return #{$val+rem};
+}
+
+
+@function _font_clamp_calc($min-size, $max-size , $units: "rem", $max_b_key: lg, $min_b_key: xs){
+  $min-breakpoint:  _remove_unit(get_map_value($breakpoints, $min_b_key));
+  $max-breakpoint:  _remove_unit(get_map_value($breakpoints, $max_b_key));
+
+  $slope: _divide($max-size - $min-size, $max-breakpoint - $min-breakpoint);
+  $slope-to-unit: $slope * 100;
+
+  $intercept-rem: $min-size - $slope * $min-breakpoint;
+  $min-size-rem: $min-size;
+  $max-size-rem: $max-size;
+  @if($units == "px") {
+    $intercept-rem: px_to_rem($min-size - $slope * $min-breakpoint);
+    $min-size-rem: px_to_rem($min-size);
+    $max-size-rem: px_to_rem($max-size);
+  }
+  @return clamp(#{$min-size-rem}, #{$slope-to-unit}vw + #{$intercept-rem}, #{$max-size-rem});
+}

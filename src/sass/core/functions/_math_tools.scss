@@ -1,0 +1,24 @@
+@use "sass:meta";
+@use "sass:math";
+@use 'sass:list';
+@use "sass:map";
+
+@function _divide($a, $b){
+  $c: math.div($a, $b);
+  @return $c;
+}
+
+@function _is_unit($val,$u:px, $is:true){
+  @if $is {
+    @return $u == math.unit($val);
+  }
+  @return $u != math.unit($val);
+}
+
+@function _remove_unit($value) {
+  @if type-of($value) == "number" and not math.is-unitless($value) {
+    @return _divide($value, ($value * 0 + 1));
+  } @else {
+    @return $value;
+  }
+}

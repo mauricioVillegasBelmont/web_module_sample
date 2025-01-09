@@ -1,0 +1,26 @@
+@use "sass:meta";
+@use "sass:string";
+@use "sass:selector";
+
+@function bem($_block: '',$_element:'',$_modifiers:()){
+  $block:'';
+  $element:'';
+  $breakpoint-key:'';
+  $modifiers:'';
+  $selector:'';
+  @if ( empty_value($_block) ) {
+    @error 'empty block';
+    @return '';
+  }
+  @if not ( empty_value($_block) ) { $block:unquote("#{$_block}"); }
+  @if not ( empty_value($_element) ) {
+    $_element_separator:'__';
+    $element: $_element_separator+unquote("#{ str-concat($_element,$_element_separator)}");
+  }
+  @if not ( empty_value($_modifiers) ) {
+    $_mod_separator: '--';
+    $modifiers:  $_mod_separator+unquote("#{ str-concat($_modifiers,$_mod_separator)}");
+  }
+  $selector:#{unquote($block)}#{unquote($element)}#{unquote($modifiers)};
+  @return $selector;
+}

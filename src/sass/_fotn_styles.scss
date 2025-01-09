@@ -1,0 +1,37 @@
+@mixin fotn_styles(){
+  img{
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    object-position: center;
+  }
+  p{
+    display: block;
+    margin: 0;
+    line-height: 1.25;
+  }
+  .note{
+    font-size: 10px;
+  }
+  .bold{
+    font-weight: bold;
+  }
+  .bolder{
+    font-weight: bold;
+  }
+  .text--left{
+    text-align: left;
+  }
+  .text--right{
+    text-align: right;
+  }
+  .text--center{
+    text-align: center;
+  }
+  @for $i from 1 through 5 {
+    .fs--#{$i}{
+      font-size: #{.5 * $i}rem;
+    }
+  }
+}
