@@ -4,8 +4,11 @@ import { consume } from "@lit/context";
 import userContext, {
   UserCalculatorData,
 } from "context/UserContext/UserContext";
-import { calculadora_form_config } from "components/CalculadoraForm/CalculadoraForm";
+import configContext, {
+  CalculatorConfigData,
+} from "context/ConfigContext/ConfigContext";
 
+import { calculadora_form_config } from "components/CalculadoraForm/CalculadoraForm";
 import styles from "components/CalculadoraDisplay/CalculadoraDisplay.scss";
 
 import step_0 from "assets/calculadora__income--0.svg";
@@ -27,22 +30,34 @@ class CalculadoraDisplay extends LitElement {
   @consume({ context: userContext, subscribe: true })
   contextValue?: UserCalculatorData;
 
-  @property() interest_rate = 0.15;
-  @property()
-  config: calculadora_form_config = {
+  @consume({ context: configContext, subscribe: true })
+  configValue: CalculatorConfigData = {
     minInvest: 500,
     maxInvest: 20000,
     maxAge: 65,
     ageStep: 1,
   };
 
-  get years_left(): number {
-    return this.config.maxAge - (this.contextValue as UserCalculatorData).age;
+  @property() interest_rate = 0.15;
+
+  anualInvestment(years: number): number {
+    return (
+      years *
+      12 *
+      ((this.contextValue as UserCalculatorData)?.investment ??
+        this.configValue.minInvest)
+    );
+  }
+
+  get yearsLeft(): number {
+    return (
+      this.configValue.maxAge -
+      ((this.contextValue as UserCalculatorData)?.age ?? 18)
+    );
   }
   get subtotal() {
-    const years_left = this.years_left;
-    const subtotal =
-      years_left * (this.contextValue as UserCalculatorData).investment;
+    const yearsLeft = this.yearsLeft;
+    const subtotal = this.anualInvestment(yearsLeft);
     return subtotal;
   }
 
@@ -54,14 +69,14 @@ class CalculadoraDisplay extends LitElement {
   get step() {
     const steps = [step_0, step_1, step_2, step_3, step_4, step_5];
     const invest_modulus =
-      (this.config.maxInvest -
+      (this.configValue.maxInvest -
         (this.contextValue as UserCalculatorData).investment) /
       5;
     let index = 0;
     for (index; index < 5; index++) {
       if (
         (this.contextValue as UserCalculatorData).investment -
-          this.config.minInvest <=
+          this.configValue.minInvest <=
         invest_modulus * index
       )
         break;

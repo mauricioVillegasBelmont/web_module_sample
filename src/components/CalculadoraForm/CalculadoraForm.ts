@@ -8,6 +8,7 @@ import styles from "./CalculadoraForm.scss";
 import userContext, { UserCalculatorData } from "context/UserContext/UserContext";
 import invalidMsg from "utils/forms/invalidMsg";
 import FormSumbiterApi from "api/api";
+import configContext, { CalculatorConfigData } from "context/ConfigContext/ConfigContext";
 
 
 export interface calculadora_form_data extends UserCalculatorData {
@@ -39,12 +40,6 @@ class CalculadoraForm extends LitElement {
   @state() protected errorMessage: string = "";
 
 
-  @property() config: calculadora_form_config = {
-    minInvest: 500,
-    maxInvest: 20000,
-    maxAge: 65,
-    ageStep: 1,
-  };
 
   @property({ type: String }) action = `/`;
   @property({ type: String }) method = `POST`;
@@ -57,6 +52,14 @@ class CalculadoraForm extends LitElement {
 
   @consume({ context: userContext, subscribe: true })
   contextValue?: UserCalculatorData;
+
+  @consume({ context: configContext, subscribe: true })
+  configValue: CalculatorConfigData = {
+    minInvest: 500,
+    maxInvest: 20000,
+    maxAge: 65,
+    ageStep: 1,
+  };
 
   connectedCallback() {
     super.connectedCallback();
@@ -85,9 +88,6 @@ class CalculadoraForm extends LitElement {
 
   async submit(event: Event) {
     event.preventDefault();
-
-    this.fromResponse('success');
-    return;
     const form = event.currentTarget as HTMLFormElement;
     if (!form) return;
     this.errorMessage = "";
@@ -106,7 +106,7 @@ class CalculadoraForm extends LitElement {
       // this._disabled = false;
     } catch (error) {
       // this._disabled = false;
-      this.fromResponse('error');
+      this.fromResponse("error");
     }
   }
 
@@ -168,8 +168,8 @@ class CalculadoraForm extends LitElement {
             type="range"
             name="age"
             min="18"
-            max="${this.config.maxAge - this.config.ageStep}"
-            step="${this.config.ageStep}"
+            max="${this.configValue.maxAge - this.configValue.ageStep * 4}"
+            step="${this.configValue.ageStep}"
             .value="${this.age}"
             @input="${this._age_handler}"
           />
@@ -183,9 +183,9 @@ class CalculadoraForm extends LitElement {
             id="investment"
             type="range"
             name="investment"
-            step="${this.config.minInvest}"
-            min="${this.config.minInvest}"
-            max="${this.config.maxInvest}"
+            step="${this.configValue.minInvest}"
+            min="${this.configValue.minInvest}"
+            max="${this.configValue.maxInvest}"
             .value="${this.investment}"
             @input="${this._investment_handler}"
           />
@@ -221,9 +221,10 @@ class CalculadoraForm extends LitElement {
 
   _input_handler(event: InputEvent) {
     if (
-      this.config === undefined ||
+      this.configValue === undefined ||
       (event.currentTarget as HTMLInputElement) === undefined
-    ) return;
+    )
+      return;
     const input = event.currentTarget as HTMLInputElement;
     input.setCustomValidity("");
     const name = input.name as keyof Omit<calculadora_form_data, "maxAge">;

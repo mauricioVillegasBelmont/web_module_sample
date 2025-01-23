@@ -6,6 +6,8 @@ import "components/CalculadoraChart/CalculadoraChart";
 import "components/CalculadoraForm/CalculadoraForm";
 import {calculadora_form_config, FromResponseEvent} from "components/CalculadoraForm/CalculadoraForm";
 
+import "components/CalculadoraForeground/CalculadoraForeground";
+import "components/ConfigContextProvider/ConfigContextProvider";
 import "components/UserContextProvider/UserContextProvider";
 import "components/CalculadoraDisplay/CalculadoraDisplay";
 
@@ -83,9 +85,8 @@ class CalculadoraAhorro extends LitElement {
     this.formState = status;
     this.requestUpdate();
   }
-  fetFormSatusModule = {
+  getFormSatusModule = {
     form: html`<calculadora-form
-      .config=${this.config as calculadora_form_config}
       .action=${this.action}
       .method=${this.method}
     ></calculadora-form>`,
@@ -102,11 +103,11 @@ class CalculadoraAhorro extends LitElement {
       </p>
     </div>`,
   };
-  fetFormModule = this.fetFormSatusModule[this.formState];
+  getFormModule = this.getFormSatusModule[this.formState];
 
   willUpdate(changedProperties: PropertyValues<this>) {
     if (changedProperties.has("formState")) {
-      this.fetFormModule = this.fetFormSatusModule[this.formState];
+      this.getFormModule = this.getFormSatusModule[this.formState];
     }
   }
 
@@ -115,40 +116,42 @@ class CalculadoraAhorro extends LitElement {
       <style>
         ${this._dinamicStyles()}
       </style>
-      <user-context
-        .contextValue=${{
-          age: 18,
-          investment: (this.config as calculadora_form_config).minInvest,
-        }}
-      >
-        <div id="${process.env.dynamic}--calculadora__ahorro">
-          <div class="${process.env.dynamic}__calculadora--container">
-            <div class="col__display">
-              <div class="chart__wrapper">
-                <calculadora-chart
-                  .interest_rate=${this.interest_rate}
-                ></calculadora-chart>
-              </div>
+      <config-context .configValue=${this.config}>
+        <user-context
+          .contextValue=${{
+            age: 18,
+            investment: (this.config as calculadora_form_config).minInvest,
+          }}
+          configValue=${this.config as calculadora_form_config}
+        >
+          <div id="${process.env.dynamic}--calculadora__ahorro">
+            <div class="${process.env.dynamic}__calculadora--container">
+              <div class="col__display">
+                <div class="chart__wrapper">
+                  <calculadora-chart
+                    .interest_rate=${this.interest_rate}
+                  ></calculadora-chart>
+                </div>
 
-              <div class="foreground "></div>
-            </div>
-            <div class="col__interface">
-              ${this.fetFormModule}
-              <div class="display">
-                <calculadora-display
-                  .config=${this.config as calculadora_form_config}
-                  .interest_rate=${this.interest_rate}
-                ></calculadora-display>
+                <calculadora-foreground></calculadora-foreground>
               </div>
-              <p class="note">
-                Los datos presentados son una estimación con fines informativos,
-                los montos pueden cambiar al momento de realizar el ejercicio
-                real.
-              </p>
+              <div class="col__interface">
+                ${this.getFormModule}
+                <div class="display">
+                  <calculadora-display
+                    .interest_rate=${this.interest_rate}
+                  ></calculadora-display>
+                </div>
+                <p class="note">
+                  Los datos presentados son una estimación con fines
+                  informativos, los montos pueden cambiar al momento de realizar
+                  el ejercicio real.
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-      </user-context>
+        </user-context>
+      </config-context>
     `;
   }
 }

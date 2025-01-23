@@ -32,7 +32,6 @@ class UserContext extends LitElement {
     this.timeoutEvent = setTimeout(() => {
       this.yellUpdated();
     }, 250);
-    // this.yellUpdated();
   }
   yellUpdated() {
     const event = new CustomEvent("contextUpdated", {
