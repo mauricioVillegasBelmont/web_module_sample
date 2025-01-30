@@ -4,17 +4,20 @@ import { customElement, property } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 import "@google-web-components/google-chart";
 
+import CalculadoraMixin from "mixins/CalculadoraMixin/CalculadoraMixin";
+
 import { consume } from "@lit/context";
 import userContext, {
   UserCalculatorData,
 } from "context/UserContext/UserContext";
-import { UserContextUpdatedEvent } from "components/UserContextProvider/UserContextProvider";
+import { UserContextUpdatedEvent } from "context/UserContext/UserContextProvider";
 import configContext, {
   CalculatorConfigData,
 } from "context/ConfigContext/ConfigContext";
 
+
 @customElement("calculadora-chart")
-export class CalculadoraChart extends LitElement {
+export class CalculadoraChart extends CalculadoraMixin(LitElement) {
   constructor() {
     super();
     window.addEventListener("load", () => {
@@ -41,7 +44,7 @@ export class CalculadoraChart extends LitElement {
   _sizeRender() {
     const parent = this.parentElement;
     if (parent) {
-      this.chartWidth = parent.getBoundingClientRect().width * .8;
+      this.chartWidth = parent.getBoundingClientRect().width * 0.8;
       this.chartHeight = parent.getBoundingClientRect().height;
       this.requestUpdate();
     }
@@ -50,26 +53,28 @@ export class CalculadoraChart extends LitElement {
   @property({ attribute: false })
   styles = { maxWidth: "100%", height: "100%" };
 
-  @property({ type: Number }) interest_rate = 0.15;
-
   @consume({ context: userContext, subscribe: true })
-  contextValue?: UserCalculatorData;
+  contextValue: UserCalculatorData = {
+    age: 18,
+    investment: 1000,
+  };
 
   @consume({ context: configContext, subscribe: true })
   configValue: CalculatorConfigData = {
+    stepInvest: 500,
     minInvest: 500,
     maxInvest: 20000,
+    interestRate: 0.05,
+    minAge: 18,
     maxAge: 65,
     ageStep: 1,
   };
 
-  calculatedInvestment(years: number): number {
-    return years * this.yearlyInvestment;
-  }
+
   get yearlyInvestment() {
     return (
       12 *
-      ((this.contextValue as UserCalculatorData)?.investment ??
+      ((this.contextValue as UserCalculatorData).investment ??
         this.configValue.minInvest)
     );
   }
@@ -81,7 +86,7 @@ export class CalculadoraChart extends LitElement {
   }
   get vMax(): number {
     const years = this.configValue.maxAge - 17;
-    const interestRate = Number(this.interest_rate);
+    const interestRate = Number(this.configValue.interestRate);
     const vMax = years * this.configValue.maxInvest * 12 * (interestRate + 1);
     return Math.round(vMax);
   }
@@ -102,15 +107,47 @@ export class CalculadoraChart extends LitElement {
 
   _chartData() {
     const years = new Date().getFullYear();
-    const periods = this.periods.map((p) => [
-      // (p + years).toString(),
-      `+${p} años`,
-      this.calculatedInvestment(p),
-      this.calculatedInvestment(p) * this.interest_rate,
-      "",
-    ]);
-    const config = [["Genre", "ahorrado", "intereses", { role: "annotation" }]];
-    const dataArray = [...config, ...periods];
+    // const periods = this.periods.map((years) => {
+    //   const invertido = this.inversionAcumulada({
+    //     pay: this.contextValue.investment,
+    //     years: years,
+    //   });
+    //   const crecimiento =
+    //     this.tabulador({
+    //       pay: this.contextValue.investment,
+    //       years: this.contextValue.age - this.configValue.minAge,
+    //     }) - invertido;
+    //     // this.ROI({
+    //     //   pay: this.contextValue.investment,
+    //     //   rate: this.configValue.interestRate,
+    //     //   years: years,
+    //     // }) - invertido;
+    //     // console.log(years+this.contextValue.age - this.configValue.minAge);
+
+    //   return [`+${years} años`, invertido, crecimiento, ""];
+    // });
+
+    // console.log("periods", periods);
+    // const periods = ()=>{
+    // };
+    console.log({
+      pay: this.contextValue.investment,
+      years: this.yearsLeft,
+    });
+    const invertido = this.inversionAcumulada({
+      pay: this.contextValue.investment,
+      years: this.yearsLeft,
+    });
+    const crecimiento =
+      this.tabulador({
+        pay: this.contextValue.investment,
+        years: this.contextValue.age - this.configValue.minAge,
+      }) - invertido;
+    const periods = [`65 años`, invertido, crecimiento, ""];
+    const config = [
+      ["Genre", "Invertido", "Intereses", { role: "annotation" }],
+    ];
+    const dataArray = [...config, ...[periods]];
     return dataArray;
   }
 
@@ -124,12 +161,8 @@ export class CalculadoraChart extends LitElement {
         1: { color: "#772D86" },
       },
       vAxis: {
-        // maxValue: this.vMax,
-        // viewWindow: {
-        //   max: this.vMax,
-        // },
+        format: "currency",
         gridlines: { color: "rgba(255,255,255,.5)" },
-        // gridlines: { color: "#fff", minSpacing: 0 },
         textPosition: "right",
         textStyle: { color: "#FFF" },
         baselineColor: "#fff",
@@ -137,7 +170,7 @@ export class CalculadoraChart extends LitElement {
       hAxis: {
         baselineColor: "#fff",
         gridlines: { color: "transparent", minSpacing: 0 },
-        textPosition: "none",
+        // textPosition: "none",
         textStyle: { color: "#FFF" },
       },
       legend: { position: "none" },

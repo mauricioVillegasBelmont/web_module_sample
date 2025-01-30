@@ -6,39 +6,41 @@
 
 .foreground{
   position: absolute;
-  inset: auto 0 0 0;
-  overflow: hidden;
-  max-height: 20%;
   z-index: 1;
   height: 100%;
+  width: 100%;
   pointer-events: none;
-  // background-color: #A4C282;
-  background-image: url('assets/grass.svg');
-  background-position: top center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  overflow: visible;
-  @include mq.breakpoint-up(sm){
-    max-height: 20%;
-  }
+  inset: 0;
+
   .dynamic__image{
     position: absolute;
     right: 0;
+    bottom: 0;
     height: 100%;
     width: 100%;
     max-width: 35%;
     overflow: visible;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    p{
+      margin-top: 0;
+      display: none;
+      text-align:center;
+      font-size: 1rem;
+      font-weight: bold;
+      @include mq.breakpoint-up(sm){
+        display: block;
+      }
+    }
     img{
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      display: block;
       z-index: 1;
       height: auto;
-      margin: 0 auto;
+      margin: auto auto 0;
       width: 100%;
       max-width: 80%;
-      aspect-ratio: 18 / 59;
+      aspect-ratio: 9 / 26;
       @include mq.breakpoint-up(sm){
         max-width: 100%;
       }

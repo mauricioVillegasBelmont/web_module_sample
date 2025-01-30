@@ -8,7 +8,7 @@ import configContext, {
   CalculatorConfigData,
 } from "context/ConfigContext/ConfigContext";
 
-import { calculadora_form_config } from "components/CalculadoraForm/CalculadoraForm";
+
 import styles from "components/CalculadoraDisplay/CalculadoraDisplay.scss";
 
 import step_0 from "assets/calculadora__income--0.svg";
@@ -18,9 +18,12 @@ import step_3 from "assets/calculadora__income--3.svg";
 import step_4 from "assets/calculadora__income--4.svg";
 import step_5 from "assets/calculadora__income--5.svg";
 
+import CalculadoraMixin from "mixins/CalculadoraMixin/CalculadoraMixin";
 
+
+// class CalculadoraDisplay extends LitElement {
 @customElement("calculadora-display")
-class CalculadoraDisplay extends LitElement {
+class CalculadoraDisplay extends CalculadoraMixin(LitElement) {
   static styles = [
     css`
       ${unsafeCSS(styles)}
@@ -28,26 +31,23 @@ class CalculadoraDisplay extends LitElement {
   ];
 
   @consume({ context: userContext, subscribe: true })
-  contextValue?: UserCalculatorData;
+  contextValue: UserCalculatorData = {
+    age: 20,
+    investment: 1000,
+  }
 
   @consume({ context: configContext, subscribe: true })
   configValue: CalculatorConfigData = {
+    stepInvest: 500,
     minInvest: 500,
     maxInvest: 20000,
+    interestRate: 0.05,
+    minAge: 18,
     maxAge: 65,
     ageStep: 1,
   };
 
-  @property() interest_rate = 0.15;
 
-  anualInvestment(years: number): number {
-    return (
-      years *
-      12 *
-      ((this.contextValue as UserCalculatorData)?.investment ??
-        this.configValue.minInvest)
-    );
-  }
 
   get yearsLeft(): number {
     return (
@@ -56,16 +56,26 @@ class CalculadoraDisplay extends LitElement {
     );
   }
   get subtotal() {
-    const yearsLeft = this.yearsLeft;
-    const subtotal = this.anualInvestment(yearsLeft);
-    return subtotal;
+    return this.inversionAcumulada({
+      pay: this.contextValue.investment,
+      years: this.yearsLeft,
+    });
   }
 
   get total() {
-    const total = this.subtotal * (this.interest_rate + 1);
-    return total;
+    // const args = {
+    //   pay: this.contextValue.investment,
+    //   rate: this.configValue.interestRate,
+    //   years: this.yearsLeft,
+    // };
+    // return this.ROI(args);
+    const args = {
+      pay: this.contextValue.investment,
+      years: this.contextValue.age - this.configValue.minAge,
+    };
+    return this.tabulador(args);
   }
-  // @property({ attribute: false })
+
   get step() {
     const steps = [step_0, step_1, step_2, step_3, step_4, step_5];
     const invest_modulus =
@@ -94,7 +104,7 @@ class CalculadoraDisplay extends LitElement {
           </div>
           <div class="column">
             <p class="bold text--right fs--3">
-              $${new Intl.NumberFormat("es-MX").format(this.subtotal)}
+              ${this.currency(this.subtotal)}
             </p>
           </div>
         </div>
@@ -104,9 +114,7 @@ class CalculadoraDisplay extends LitElement {
           </div>
           <div class="dynamic__info text--right">
             <p class="label">Ganancia:</p>
-            <p class="money bold fs--4">
-              $${new Intl.NumberFormat("es-MX").format(this.total)}
-            </p>
+            <p class="money bold fs--4">${this.currency(this.total)}</p>
           </div>
         </div>
       </div>

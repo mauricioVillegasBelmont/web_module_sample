@@ -32,6 +32,8 @@
       width: clamp(300px, 100%, 400px);
       padding: 1.5rem .75rem;
       position: relative;
+      display: flex;
+      flex-direction: column;
     }
     .col__interface{
       @extend %collumn;
@@ -39,6 +41,12 @@
       .note{
         font-size: 10px;
         text-align: center;
+        order: 2;
+      }
+      .display{
+        @include mq.breakpoint-up(sm){
+          order: 1;
+        }
       }
       .form{
         &___statusmsg{
@@ -58,10 +66,8 @@
     .col__display{
       @extend %collumn;
       background-image: url('./assets/calculadora__background_land.svg');
-      // padding-left: 0;
-      // padding-right: 0;
-      // padding-bottom: 0;
-      padding: 0;
+      padding-top: 0;
+      padding-bottom: 0;
       height: 40vh;
       background-position: center;
       background-size: cover;
@@ -70,9 +76,22 @@
         order: 1;
         height: auto;
       }
+      &::before{
+        content: '';
+        position: absolute;
+        inset: auto 0 0 0;
+        overflow: hidden;
+        max-height: 21.25%;
+        height: 100%;
+        pointer-events: none;
+        background-image: url('assets/grass.svg');
+        background-position: top center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        overflow: visible;
+      }
+
       .chart__wrapper{
-        // padding-left: .75rem;
-        // padding-right: .75rem;
         overflow: hidden;
         height: 100%;
       }

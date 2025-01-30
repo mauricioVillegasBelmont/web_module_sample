@@ -1,9 +1,7 @@
 const path = require("path");
 const webpack = require("webpack");
-// const { castToSass } = require("node-sass-utils");
 const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 const ImageminWebpWebpackPlugin = require("imagemin-webp-webpack-plugin");
-
 
 
 function custom_hash(){
@@ -36,6 +34,7 @@ module.exports = (env,args)=> {
           },
         ],
       }),
+      // new CompressionPlugin({ test: /\.js$|\.ts$|\.css$|\.html$/ }),
     ],
     resolve: {
       extensions: [".tsx", ".ts", ".js", ".mjs"],

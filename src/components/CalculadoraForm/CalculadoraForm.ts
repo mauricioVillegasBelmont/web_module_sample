@@ -15,14 +15,6 @@ export interface calculadora_form_data extends UserCalculatorData {
   name: string;
   email: string;
   whatsapp: string;
-  // age: number;
-  // investment: number;
-}
-export interface calculadora_form_config {
-  minInvest: number;
-  maxInvest: number;
-  maxAge: number;
-  ageStep: number;
 }
 export interface FromResponseEvent extends Event, CustomEvent {
   detail: {[status:string]:"success" | "error"};
@@ -39,8 +31,6 @@ class CalculadoraForm extends LitElement {
   @state() protected _disabled: boolean = true;
   @state() protected errorMessage: string = "";
 
-
-
   @property({ type: String }) action = `/`;
   @property({ type: String }) method = `POST`;
 
@@ -55,8 +45,11 @@ class CalculadoraForm extends LitElement {
 
   @consume({ context: configContext, subscribe: true })
   configValue: CalculatorConfigData = {
+    stepInvest: 500,
     minInvest: 500,
     maxInvest: 20000,
+    interestRate: 0.05,
+    minAge: 18,
     maxAge: 65,
     ageStep: 1,
   };
@@ -114,6 +107,36 @@ class CalculadoraForm extends LitElement {
     return html`
       <form @submit="${this.submit}" class="${process.env.dynamic}__form">
         <div class="${process.env.dynamic}__form--group">
+          <label for="age">Edad:</label>
+          <span id="age_val">${this.age} años</span>
+          <input
+            id="age"
+            type="range"
+            name="age"
+            min="${this.configValue.minAge}"
+            max="${this.configValue.maxAge - 15}"
+            step="${this.configValue.ageStep}"
+            .value="${this.age}"
+            @input="${this._age_handler}"
+          />
+        </div>
+        <div class="${process.env.dynamic}__form--group">
+          <label for="investment">Inversión mensual:</label>
+          <span id="investment_val"
+            >$${new Intl.NumberFormat().format(this.investment)}</span
+          >
+          <input
+            id="investment"
+            type="range"
+            name="investment"
+            step="${this.configValue.stepInvest}"
+            min="${this.configValue.minInvest}"
+            max="${this.configValue.maxInvest}"
+            .value="${this.investment}"
+            @input="${this._investment_handler}"
+          />
+        </div>
+        <div class="${process.env.dynamic}__form--group">
           <input
             id="name"
             type="text"
@@ -161,36 +184,6 @@ class CalculadoraForm extends LitElement {
           />
         </div>
         <div class="${process.env.dynamic}__form--group">
-          <label for="age">Edad:</label>
-          <span id="age_val">${this.age} años</span>
-          <input
-            id="age"
-            type="range"
-            name="age"
-            min="18"
-            max="${this.configValue.maxAge - this.configValue.ageStep * 4}"
-            step="${this.configValue.ageStep}"
-            .value="${this.age}"
-            @input="${this._age_handler}"
-          />
-        </div>
-        <div class="${process.env.dynamic}__form--group">
-          <label for="investment">Inversión mensual:</label>
-          <span id="investment_val"
-            >$${new Intl.NumberFormat().format(this.investment)}</span
-          >
-          <input
-            id="investment"
-            type="range"
-            name="investment"
-            step="${this.configValue.minInvest}"
-            min="${this.configValue.minInvest}"
-            max="${this.configValue.maxInvest}"
-            .value="${this.investment}"
-            @input="${this._investment_handler}"
-          />
-        </div>
-        <div class="${process.env.dynamic}__form--group">
           ${this.errorMessage}
         </div>
         <div class="${process.env.dynamic}__form--group">
@@ -227,7 +220,7 @@ class CalculadoraForm extends LitElement {
       return;
     const input = event.currentTarget as HTMLInputElement;
     input.setCustomValidity("");
-    const name = input.name as keyof Omit<calculadora_form_data, "maxAge">;
+    const name = input.name as keyof calculadora_form_data;
     const value = input.value;
     if (name === "age" || name === "investment") {
       this[name] = Number(value);

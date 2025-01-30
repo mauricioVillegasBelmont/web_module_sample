@@ -1,14 +1,16 @@
 import { LitElement, html, css, unsafeCSS, PropertyValues } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import "components/CalculadoraChart/CalculadoraChart";
+import { CalculatorConfigData } from "context/ConfigContext/ConfigContext";
+import { FromResponseEvent} from "components/CalculadoraForm/CalculadoraForm";
 
+
+import "components/CalculadoraChart/CalculadoraChart";
 import "components/CalculadoraForm/CalculadoraForm";
-import {calculadora_form_config, FromResponseEvent} from "components/CalculadoraForm/CalculadoraForm";
 
 import "components/CalculadoraForeground/CalculadoraForeground";
-import "components/ConfigContextProvider/ConfigContextProvider";
-import "components/UserContextProvider/UserContextProvider";
+import "context/ConfigContext/ConfigContextProvider";
+import "context/UserContext/UserContextProvider";
 import "components/CalculadoraDisplay/CalculadoraDisplay";
 
 import styles from "main.scss";
@@ -37,8 +39,11 @@ class CalculadoraAhorro extends LitElement {
     converter: {
       fromAttribute: (value) => {
         const defaultValue = {
+          stepInvest: 500,
           minInvest: 500,
           maxInvest: 20000,
+          interestRate: 0.05,
+          minAge: 18,
           maxAge: 65,
           ageStep: 1,
         };
@@ -56,13 +61,15 @@ class CalculadoraAhorro extends LitElement {
       toAttribute: (value) => JSON.stringify(value),
     },
   })
-  config?: calculadora_form_config = {
-    minInvest: 500,
-    maxInvest: 20000,
+  config?: CalculatorConfigData = {
+    stepInvest: 500,
+    minInvest: 2000,
+    maxInvest: 10000,
+    interestRate: 0.05,
+    minAge: 20,
     maxAge: 65,
     ageStep: 1,
   };
-  @property({ type: Number }) interest_rate = 0.05;
   @property({ type: String }) fontFamily = `sans-serif`;
   @property({ type: String }) action = `/`;
   @property({ type: String }) method = `POST`;
@@ -119,28 +126,25 @@ class CalculadoraAhorro extends LitElement {
       <config-context .configValue=${this.config}>
         <user-context
           .contextValue=${{
-            age: 18,
-            investment: (this.config as calculadora_form_config).minInvest,
+            age: (this.config as CalculatorConfigData).minAge,
+            investment: (this.config as CalculatorConfigData).minInvest,
           }}
-          configValue=${this.config as calculadora_form_config}
+          configValue=${this.config as CalculatorConfigData}
         >
           <div id="${process.env.dynamic}--calculadora__ahorro">
             <div class="${process.env.dynamic}__calculadora--container">
               <div class="col__display">
                 <div class="chart__wrapper">
-                  <calculadora-chart
-                    .interest_rate=${this.interest_rate}
-                  ></calculadora-chart>
+                  <calculadora-chart></calculadora-chart>
                 </div>
-
                 <calculadora-foreground></calculadora-foreground>
               </div>
               <div class="col__interface">
-                ${this.getFormModule}
                 <div class="display">
-                  <calculadora-display
-                    .interest_rate=${this.interest_rate}
-                  ></calculadora-display>
+                  <calculadora-display></calculadora-display>
+                </div>
+                <div class="form">
+                  ${this.getFormModule}
                 </div>
                 <p class="note">
                   Los datos presentados son una estimación con fines
